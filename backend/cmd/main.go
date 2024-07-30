@@ -26,7 +26,7 @@ func main() {
 	go hub.Run()
 
 
-	r := routers.InitRouter(userHandler, wsHandler)
+	r := routers.InitRouter(config,userHandler, wsHandler)
 	r.Run(config.ServerHost + ":" + config.ServerPort)
 
 }
