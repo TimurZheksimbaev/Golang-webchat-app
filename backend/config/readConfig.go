@@ -1,9 +1,8 @@
 package config
 
 import (
-	"errors"
 	"time"
-
+	"github.com/TimurZheksimbaev/Golang-webchat/utils"
 	"github.com/spf13/viper"
 )
 
@@ -13,6 +12,7 @@ type AppConfig struct {
 	ServerPort string `mapstructure:"SERVER_PORT"`
 	SecretKey string `mapstructure:"SECRET_KEY"`
 	JWTExpiration time.Duration `mapstructure:"TOKEN_EXPIRES_IN"`
+	FrontendURL string `mapstructure:"FRONTEND_URL"`
 }
 
 func LoadEnv() (*AppConfig, error) {
@@ -22,7 +22,7 @@ func LoadEnv() (*AppConfig, error) {
 	viper.AutomaticEnv()
 	err := viper.ReadInConfig()
 	if err != nil {
-		return nil, errors.New("Could not read config file")
+		return nil, utils.ConfigError("Could not read config file", err)
 	}
 	var appConfig AppConfig
 	err = viper.Unmarshal(&appConfig)

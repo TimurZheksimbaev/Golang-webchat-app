@@ -10,7 +10,6 @@ import (
 
 type Database struct {
 	db *sql.DB
-
 }
 
 func NewDatabase(config *config.AppConfig) (*Database, error) {

@@ -1,11 +1,8 @@
 run:
 	@go run cmd/main.go
 
-source:
-	@source app.env
-
 migrateup:
-	@migrate -path database/migrations -database $(DB_URL) -verbose up
+	migrate -path db/migrations -database "postgresql://root:password@localhost:5433/go-chat?sslmode=disable" -verbose up
 
-migratedown: 
-	@migrate -path database/migrations -database $DB_URL -verbose down
+migratedown:
+	migrate -path db/migrations -database "postgresql://root:password@localhost:5433/go-chat?sslmode=disable" -verbose down

@@ -25,6 +25,10 @@ func DatabaseError(message string, err error) error {
 	return fmt.Errorf("[DATABASE] %s: %s", message, err)
 }
 
+func ConfigError(message string, err error) error {
+	return fmt.Errorf("[CONFIG] %s: %s", message, err)
+}
+
 func AuthError(message string, err error) error {
 	return fmt.Errorf("[AUTHENTICATION] %s: %s", message, err)
 }

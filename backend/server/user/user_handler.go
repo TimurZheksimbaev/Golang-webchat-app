@@ -2,23 +2,22 @@ package user
 
 import (
 	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 
 
 type Handler struct {
-	Service
+	service ServiceI
 }
 
-func NewHandler(service Service) *Handler {
+func NewHandler(service ServiceI) *Handler {
 	return &Handler{
-		Service: service,
+		service: service,
 	}
 }
 
 
-func (h *Handler) CreateUser(c *gin.Context) {
+func (h *Handler) SignUp(c *gin.Context) {
 	var u CreateUserRequest
 	if err := c.ShouldBindJSON(&u); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -27,7 +26,7 @@ func (h *Handler) CreateUser(c *gin.Context) {
 		return 
 	}
 
-	response, err := h.Service.CreateUser(c.Request.Context(), &u)
+	response, err := h.service.CreateUser(c.Request.Context(), &u)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -46,7 +45,7 @@ func (h *Handler) Login(c *gin.Context) {
 		return 
 	}
 
-	u, err := h.Service.Login(c.Request.Context(), &user) 
+	u, err := h.service.Login(c.Request.Context(), &user) 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return 

@@ -23,7 +23,7 @@ func InitRouter(userHandler *user.Handler, wsHandler *ws.Handler) *gin.Engine {
 	auth := r.Group("/auth")
 	websocket := r.Group("/ws")
 
-	auth.POST("/register", userHandler.CreateUser)
+	auth.POST("/register", userHandler.SignUp)
 	auth.POST("/login", userHandler.Login)
 	auth.GET("/logout", userHandler.Logout)
 

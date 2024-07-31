@@ -4,41 +4,48 @@ import (
 	"context"
 	"strconv"
 	"time"
-
 	"github.com/TimurZheksimbaev/Golang-webchat/config"
 	"github.com/TimurZheksimbaev/Golang-webchat/utils"
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type service struct {
-	repository Repository
+type ServiceI interface {
+	CreateUser(c context.Context, req *CreateUserRequest) (*CreateUserResponse, error)
+	Login(c context.Context, req *LoginUserRequest) (*LoginUserResponse, error )
+}
+
+type Service struct {
+	repository RepositoryI
 	timeout time.Duration
 	appConfig *config.AppConfig
 }
 
-func NewService(repository Repository, appConfig *config.AppConfig) Service {
-	return &service{
+func NewService(repository RepositoryI, appConfig *config.AppConfig) ServiceI {
+	return &Service{
 		repository: repository,
 		timeout: time.Duration(2) * time.Second,
 		appConfig: appConfig,
 	}
 }
 
-func (s *service) CreateUser(c context.Context, req *CreateUserRequest) (*CreateUserResponse, error) {
+func (s *Service) CreateUser(c context.Context, req *CreateUserRequest) (*CreateUserResponse, error) {
 	ctx, cancel := context.WithTimeout(c, s.timeout)
 	defer cancel()
 
+	// hash user password
 	hashedPassword, err := utils.EncryptPassword(req.Password)
 	if err != nil {
 		return nil, utils.ServiceError("Could not encrypt password", err)
 	}
 
-	u := &User{
+	//construct user model
+	u := &User{	
 		Username: req.Username,
 		Email: req.Email,
 		Password: hashedPassword,
 	}
 
+	// create user
 	r, err := s.repository.CreateUser(ctx, u)
 	if err != nil {
 		return nil, utils.ServiceError("Could not create user", err)
@@ -57,7 +64,7 @@ type MyJWTClaims struct {
 	jwt.RegisteredClaims
 }
 
-func (s *service) Login(c context.Context, req *LoginUserRequest) (*LoginUserResponse, error ) {
+func (s *Service) Login(c context.Context, req *LoginUserRequest) (*LoginUserResponse, error ) {
 	ctx, cancel := context.WithTimeout(c, s.timeout)
 	defer cancel()
 
@@ -90,7 +97,5 @@ func (s *service) Login(c context.Context, req *LoginUserRequest) (*LoginUserRes
 		Username: u.Username,
 		ID: strconv.Itoa(int(u.ID)),
 	}, nil
-
-
 
 }
