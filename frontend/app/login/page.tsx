@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { UserInfo } from "@/modules/auth_provider";
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/modules/auth_provider";
+import { setCookie } from 'cookies-next';
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -32,13 +33,17 @@ const LoginPage = () => {
       });
 
       const data = await res.json();
+      console.log(data)
       if (res.ok) {
         const user: UserInfo = {
           username: data.username,
           id: data.id,
         };
 
-        localStorage.setItem("user_info", JSON.stringify(user));
+        // localStorage.setItem("user_info", JSON.stringify(user));
+        setCookie('is_authorized', true);
+
+        // router.push('/');
         return router.push("/");
       }
     } catch (err) {
@@ -60,7 +65,7 @@ const LoginPage = () => {
           onChange={(e) => setEmail(e.target.value)}
         />
         <input
-          type="text"
+          type="password"
           placeholder="password"
           className="p-3 mt-8 rounded-md border-2 border-grey focus:outline-none focus:border-blue"
           value={password}

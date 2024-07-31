@@ -1,10 +1,11 @@
+"use client"
 import React,  {useState, createContext} from 'react'
 
 type Conn = WebSocket | null
 
 export const WebsocketContext = createContext<{
     conn: Conn
-    setConn: (conn: Conn) => void
+    setConn: (c: Conn) => void
 }>({
     conn: null,
     setConn: () => {}

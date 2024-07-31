@@ -20,10 +20,6 @@ const HomePage = () => {
     try {
       const res = await fetch(`${apiUrl}/ws/rooms`, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
       });
 
       const data = await res.json();
@@ -36,10 +32,11 @@ const HomePage = () => {
   };
 
   const joinRoom = async (roomId: string) => {
-    const ws = new WebSocket(`${wsUrl}/ws/joinRoom/${roomId}?userId=${user.id}`);
+    const ws = new WebSocket(`${wsUrl}/ws/joinRoom/${roomId}?userId=${user.id}&username=${user.username}`);
     if (ws.OPEN) {
       setConn(ws)
-      router.push("/app")
+      console.log(ws)
+      router.push("/chat")
       return 
     }
   }
@@ -78,6 +75,7 @@ const HomePage = () => {
             className="p-2 rounded-md border border-grey focus:outline-none focus:border-blue-500"
             value={roomName}
             onChange={(e) => setRoomName(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && submitHandler(e)}
           />
           <button
             onClick={submitHandler}
