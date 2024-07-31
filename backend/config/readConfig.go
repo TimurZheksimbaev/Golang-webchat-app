@@ -13,7 +13,6 @@ type AppConfig struct {
 	ServerPort string `mapstructure:"SERVER_PORT"`
 	SecretKey string `mapstructure:"SECRET_KEY"`
 	JWTExpiration time.Duration `mapstructure:"TOKEN_EXPIRES_IN"`
-	FrontendURL string `mapstructure:"FRONTEND_URL"`
 }
 
 func LoadEnv() (*AppConfig, error) {
